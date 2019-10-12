@@ -1,0 +1,331 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>BFO1</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-12"><meta name="DC.source" content="BFO1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% function f(x1,x2)=x1^2+x2^2 by using BFO)</span>
+<span class="comment">% written by Mojtaba Eslami</span>
+
+clear <span class="string">all</span>
+
+S = 6; <span class="comment">% the number of bacteria (should be an even number)</span>
+Nc = 100;
+Ns = 4;
+Nre = 1; <span class="comment">% to find the optimal solution set it equal to 4</span>
+Ned = 1; <span class="comment">% to find the optimal solution set it equal to 2</span>
+Ped = .25;
+Ci = 0.3; <span class="comment">% to find the optimal solution set it equal to .1</span>
+
+theta_new = ones(2,S/2);
+
+theta = -5+10*rand(2,S); <span class="comment">% generate S random pairs in the interval [-5,5]</span>
+J = theta(1,:).^2+theta(2,:).^2;
+
+count2 = 1;
+count3 = 1;
+
+J_best = min(J);
+
+<span class="keyword">for</span> l=1:Ned
+    <span class="keyword">for</span> k=1:Nre
+        J_health = zeros(1,S);
+        <span class="keyword">for</span> j=1:Nc
+
+            J_last = J;
+            delta = -1+2*rand(2,S);
+            temp1 = delta.*delta;
+            theta = theta+Ci*delta./sqrt([temp1(1,:)+temp1(2,:);temp1(1,:)+temp1(2,:)]);
+            J = theta(1,:).^2+theta(2,:).^2;
+
+            <span class="keyword">for</span> i=1:S
+                m = 0;
+                <span class="keyword">while</span> m&lt;Ns
+                    m = m+1;
+                    <span class="keyword">if</span> J(i)&lt;J_last(i)
+                        J_last(i) = J(i);
+
+                        <span class="keyword">if</span> J(i)&lt;J_best
+                            J_best(count3) = J(i);
+                            count3 = count3+1;
+                            theta_best = theta(:,i);
+                        <span class="keyword">elseif</span> count3&gt;1
+                            J_best(count3) = J_best(count3-1);
+                            count3 = count3+1;
+                        <span class="keyword">end</span>
+
+                        bacteria1(:,count2) = theta(:,1);
+                        bacteria2(:,count2) = theta(:,2);
+                        bacteria3(:,count2) = theta(:,3);
+                        bacteria4(:,count2) = theta(:,4);
+                        bacteria5(:,count2) = theta(:,5);
+                        bacteria6(:,count2) = theta(:,6);
+                        count2 = count2+1;
+
+                        theta(:,i) = theta(:,i)+Ci*delta(:,i)./sqrt([temp1(1,i)+temp1(2,i);temp1(1,i)+temp1(2,i)]);
+                        J(i) = 20+theta(1,i).^2+theta(2,i).^2-10*cos(2*pi*theta(1,i))-10*cos(2*pi*theta(2,i));
+
+
+                    <span class="keyword">else</span>
+                        m = Ns;
+                     <span class="keyword">end</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+            J_health = J_health+J;
+
+
+        <span class="keyword">end</span> <span class="comment">% chemotaxis loop</span>
+
+
+        temp2 = median(sort(J_health));
+
+        count = 1;
+        <span class="keyword">for</span> i=1:S
+            <span class="keyword">if</span> J_health(i)&lt;temp2
+                theta_new(:,count) = theta(:,i);
+                count = count+1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+        theta = [theta_new theta_new];
+    <span class="keyword">end</span> <span class="comment">%reproduction loop</span>
+
+    temp3 = rand(1,S);
+    <span class="keyword">for</span> i=1:S
+        <span class="keyword">if</span> temp3(i)&lt;Ped
+            theta(:,i) = -5+10*rand(2,1);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span> <span class="comment">% elimination-dispersal loop</span>
+
+
+x = [-5:0.01:5];
+y = [-5:0.01:5];
+<span class="keyword">for</span> i=1:length(x)
+    <span class="keyword">for</span> j=1:length(y)
+        f(i,j) = x(i)^2+y(j)^2;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+figure(1);clf;hold <span class="string">on</span>
+contour(x,y,f)
+plot(0,0,<span class="string">'xk'</span>)
+xlabel(<span class="string">'x_1'</span>)
+ylabel(<span class="string">'x_2'</span>)
+
+plot(bacteria1(1,:),bacteria1(2,:))
+plot(bacteria2(1,:),bacteria2(2,:),<span class="string">'r'</span>)
+plot(bacteria3(1,:),bacteria3(2,:),<span class="string">'m'</span>)
+plot(bacteria4(1,:),bacteria4(2,:),<span class="string">'c'</span>)
+plot(bacteria5(1,:),bacteria5(2,:),<span class="string">'g'</span>)
+plot(bacteria6(1,:),bacteria6(2,:),<span class="string">'y'</span>)
+
+colormap(gray)
+
+figure(2)
+plot(J_best,<span class="string">'k'</span>)
+xlabel(<span class="string">'number of chemotaxis'</span>)
+ylabel(<span class="string">'min f(x_1,x_2)'</span>)
+
+
+theta_best
+</pre><pre class="codeoutput">
+theta_best =
+
+   -0.0230
+   -0.4409
+
+</pre><img vspace="5" hspace="5" src="BFO1_01.png" alt=""> <img vspace="5" hspace="5" src="BFO1_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% function f(x1,x2)=x1^2+x2^2 by using BFO)
+% written by Mojtaba Eslami
+
+clear all
+
+S = 6; % the number of bacteria (should be an even number)
+Nc = 100;
+Ns = 4;
+Nre = 1; % to find the optimal solution set it equal to 4
+Ned = 1; % to find the optimal solution set it equal to 2
+Ped = .25;
+Ci = 0.3; % to find the optimal solution set it equal to .1
+
+theta_new = ones(2,S/2);
+
+theta = -5+10*rand(2,S); % generate S random pairs in the interval [-5,5]
+J = theta(1,:).^2+theta(2,:).^2;
+
+count2 = 1;
+count3 = 1;
+
+J_best = min(J);
+
+for l=1:Ned
+    for k=1:Nre
+        J_health = zeros(1,S);
+        for j=1:Nc
+            
+            J_last = J;
+            delta = -1+2*rand(2,S);
+            temp1 = delta.*delta;
+            theta = theta+Ci*delta./sqrt([temp1(1,:)+temp1(2,:);temp1(1,:)+temp1(2,:)]);
+            J = theta(1,:).^2+theta(2,:).^2;
+            
+            for i=1:S
+                m = 0;
+                while m<Ns
+                    m = m+1;
+                    if J(i)<J_last(i)
+                        J_last(i) = J(i);
+                        
+                        if J(i)<J_best
+                            J_best(count3) = J(i);
+                            count3 = count3+1;
+                            theta_best = theta(:,i);
+                        elseif count3>1
+                            J_best(count3) = J_best(count3-1);
+                            count3 = count3+1;
+                        end
+                        
+                        bacteria1(:,count2) = theta(:,1);
+                        bacteria2(:,count2) = theta(:,2);
+                        bacteria3(:,count2) = theta(:,3);
+                        bacteria4(:,count2) = theta(:,4);
+                        bacteria5(:,count2) = theta(:,5);
+                        bacteria6(:,count2) = theta(:,6);
+                        count2 = count2+1;
+                         
+                        theta(:,i) = theta(:,i)+Ci*delta(:,i)./sqrt([temp1(1,i)+temp1(2,i);temp1(1,i)+temp1(2,i)]);
+                        J(i) = 20+theta(1,i).^2+theta(2,i).^2-10*cos(2*pi*theta(1,i))-10*cos(2*pi*theta(2,i));
+                        
+                        
+                    else
+                        m = Ns;
+                     end
+                end
+            end
+            J_health = J_health+J;
+            
+           
+        end % chemotaxis loop
+
+        
+        temp2 = median(sort(J_health));
+        
+        count = 1;
+        for i=1:S
+            if J_health(i)<temp2
+                theta_new(:,count) = theta(:,i);
+                count = count+1;
+            end
+        end
+        
+        theta = [theta_new theta_new];
+    end %reproduction loop
+    
+    temp3 = rand(1,S);
+    for i=1:S
+        if temp3(i)<Ped
+            theta(:,i) = -5+10*rand(2,1);
+        end
+    end
+    
+end % elimination-dispersal loop
+
+
+x = [-5:0.01:5];
+y = [-5:0.01:5];
+for i=1:length(x)
+    for j=1:length(y)
+        f(i,j) = x(i)^2+y(j)^2;
+    end
+end
+figure(1);clf;hold on
+contour(x,y,f)
+plot(0,0,'xk')
+xlabel('x_1')
+ylabel('x_2')
+
+plot(bacteria1(1,:),bacteria1(2,:))
+plot(bacteria2(1,:),bacteria2(2,:),'r')
+plot(bacteria3(1,:),bacteria3(2,:),'m')
+plot(bacteria4(1,:),bacteria4(2,:),'c')
+plot(bacteria5(1,:),bacteria5(2,:),'g')
+plot(bacteria6(1,:),bacteria6(2,:),'y')
+
+colormap(gray)
+
+figure(2)
+plot(J_best,'k')
+xlabel('number of chemotaxis')
+ylabel('min f(x_1,x_2)')
+        
+        
+theta_best        
+        
+            
+           
+##### SOURCE END #####
+--></body></html>
